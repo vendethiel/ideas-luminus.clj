@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+
+{% block title %}{{idea.name}} - Ideas{% endblock %}
+
+{% block content %}
+  <h1>{{idea.name}}</h1>
+
+  {% if tags|not-empty %}
+  <h5><i>Tagged: {{tags|join:", "}}</i></h5>
+  {% endif %}
+
+  <p>{{idea.description}}</p>
+
+  {% if categories|not-empty %}
+    <h3>Appears in:</h3>
+    <ul>
+      {% for category in categories %}
+        <li><a href="/categories/{{category.id}}">{{category.name}}</a></li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  {% if implementations|not-empty %}
+    <h3>User-submitted implementations:</h3>
+    <ul>
+      {% for implementation in implementations %}
+      <li>
+        <a href="/implementations/{{implementation.id}}">Implementation</a> by <a href="/users/{{implementation.user_id}}">{{implementation.username}}</a>
+        {% if implementation.tags|not-empty %}
+          <i>Tagged: {{implementation.tags|join:", "}}</i>
+        {% endif %}
+        <p>{{implementation.comment}}</p>
+      </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  {% if comments|not-empty %}
+    <b>{{comments|count}} comment{{comments|pluralize}}</b>
+    {% for comment in comments %}
+      <div class="idea-comment">
+        <i>By <a href="/users/{{comment.user_id}}">{{comment.username}}</a> on {{comment.date}}</i>
+        {% if comment.user_admin %}
+          <p>{{comment.content|safe}}</p>
+        {% else %}
+          <p>{{comment.content}}</p>
+        {% endif %}
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endblock %}

@@ -1,0 +1,8 @@
+{:full-name "vendethiel/ideas"
+ :ns-name   "vendethiel.ideas"
+ :sanitized "vendethiel/ideas"
+ :name      "ideas"
+ :modules   {:root         "modules"
+             :repositories [{:url  "https://github.com/kit-clj/modules.git"
+                             :tag  "master"
+                             :name "kit-modules"}]}}

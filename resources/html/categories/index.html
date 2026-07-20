@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+
+{% block title %}Categories - Ideas{% endblock %}
+
+{% block content %}
+    <h1>Categories</h1>
+  {% if categories|empty? %}
+    <h3>Stay tuned!</h3>
+  {% else %}
+    <ul>
+      {% for category in categories %}
+      <li><a href="/categories/{{category.id}}">{{category.name}}</a></li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endblock %}
