@@ -14,6 +14,7 @@ CREATE TABLE categories (
 --;;
 CREATE TABLE ideas (
   id SERIAL PRIMARY KEY,
+  user_id INT NOT NULL REFERENCES users (id),
   name TEXT NOT NULL,
   description TEXT NOT NULL,
   tags TEXT[] NOT NULL
@@ -31,6 +32,7 @@ CREATE TABLE implementations (
   user_id integer NOT NULL REFERENCES users (id),
   repo_url TEXT,
   demo_url TEXT,
+  abstract TEXT,
   comment TEXT,
   tags TEXT[] NOT NULL
 );

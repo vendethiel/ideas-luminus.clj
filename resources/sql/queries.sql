@@ -65,11 +65,12 @@ select i.id, i.name, i.description, i.tags,
          'name', cat.name
        )) categories,
        json_group_array(json_object(
+         'id', imp.id,
          'user_id', imp.user_id,
          'username', impu.username,
          'repo_url', imp.repo_url,
          'demo_url', imp.demo_url,
-         'comment', imp.comment,
+         'abstract', imp.comment,
          'tags', jsonb(imp.tags)
        )) implementations
 from ideas i
@@ -78,6 +79,7 @@ left join comments com
  and com.parent_id = i.id
 left join users cu
   on cu.id = com.user_id
+ and cu.is_active
 left join idea_category ic
   on ic.idea_id = i.id
 left join categories cat
@@ -86,5 +88,44 @@ left join implementations imp
   on imp.idea_id = i.id
 left join users impu
   on imp.user_id = impu.id
+ and impu.is_active
 where i.id = :id
 group by i.id
+
+
+-- :name get-implementation-details :? :1
+-- :doc Return an implementation
+select imp.repo_url, imp.demo_url, imp.abstract, imp.comment,
+       imp.tags,
+       impu.id implementation_user,
+       impu.username implementation_username,
+       idea.id idea_id,
+       idea.name idea_name,
+       idea.description idea_description,
+       idea.tags idea_tags,
+       ideau.id idea_user,
+       ideau.username idea_username,
+       json_group_array(json_object(
+         'user_id', com.user_id,
+         'username', cu.username,
+         'user_admin', cu.admin,
+         'content', com.content,
+         'date', com.created_at
+       )) comments
+from implementations imp
+left join comments com
+  on com.parent_type = 'implementations'
+ and com.parent_id = imp.id
+left join users cu
+  on cu.id = com.user_id
+ and cu.is_active
+inner join ideas idea
+  on idea.id = imp.idea_id
+left join users impu
+  on impu.id = imp.user_id
+ and impu.is_active
+left join users ideau
+  on ideau.id = idea.user_id
+ and ideau.is_active
+where imp.id = :id
+group by imp.id, idea.id, impu.id, ideau.id

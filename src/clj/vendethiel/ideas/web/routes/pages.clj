@@ -7,7 +7,8 @@
     [reitit.ring.middleware.parameters :as parameters]
     [ring.middleware.anti-forgery :refer [wrap-anti-forgery]]
     [vendethiel.ideas.web.pages.categories :as categories]
-    [vendethiel.ideas.web.pages.ideas :as ideas]))
+    [vendethiel.ideas.web.pages.ideas :as ideas]
+    [vendethiel.ideas.web.pages.implementations :as implementations]))
 
 (defn wrap-page-defaults []
   (let [error-page (layout/error-page
@@ -28,6 +29,12 @@
    ["/ideas"
     {}
     ["/:id" {:get {:handler (partial ideas/get-idea opts)
+                   :parameters {:path [:map [:id int?]]}}}]
+    ]
+
+   ["/implementations"
+    {}
+    ["/:id" {:get {:handler (partial implementations/get-implementation opts)
                    :parameters {:path [:map [:id int?]]}}}]
     ]
    ])
