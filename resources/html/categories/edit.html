@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+
+{% block title %}
+  {% if category %}
+    Editing {{category.name}}
+  {% else %}
+    New Category
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  <h1>
+  {% if category %}
+    Editing <a href="/category/{{category.id}}">{{category.name}}</a>
+  {% else %}
+    New Category
+  {% endif %}
+  </h1>
+
+  {% if category %}
+  <form action="/category/{{category.id}}" method="post">
+  {% else %}
+  <form action="/category" method="post">
+  {% endif %}
+    <label for="name">
+      Name
+      {% if errors.name %}
+        <span class="error> - {{errors.name}}</span>
+      {% endif %}
+    </label>
+    <input type="text" name="name" value="{{category.name}}" />
+  </form>
+{% endif %}
