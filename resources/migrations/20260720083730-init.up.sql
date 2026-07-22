@@ -1,19 +1,20 @@
 CREATE TABLE users (
- id SERIAL PRIMARY KEY,
- email TEXT,
- username TEXT,
- admin BOOLEAN NOT NULL,
- last_login TIME,
- is_active BOOLEAN NOT NULL,
- pass TEXT);
+  id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+  email TEXT,
+  username TEXT,
+  admin BOOLEAN NOT NULL,
+  last_login TIME,
+  is_active BOOLEAN NOT NULL,
+  pass TEXT
+);
 --;;
 CREATE TABLE categories (
-  id SERIAL PRIMARY KEY,
+  id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
   name TEXT NOT NULL
 );
 --;;
 CREATE TABLE ideas (
-  id SERIAL PRIMARY KEY,
+  id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
   user_id INT NOT NULL REFERENCES users (id),
   name TEXT NOT NULL,
   description TEXT NOT NULL,
@@ -27,7 +28,7 @@ CREATE TABLE idea_category (
 );
 --;;
 CREATE TABLE implementations (
-  id SERIAL PRIMARY KEY,
+  id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
   idea_id integer NOT NULL REFERENCES ideas (id),
   user_id integer NOT NULL REFERENCES users (id),
   repo_url TEXT,
@@ -38,16 +39,16 @@ CREATE TABLE implementations (
 );
 --;;
 CREATE TABLE screenshots (
-  id SERIAL PRIMARY KEY,
+  id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
   implementation_id integer NOT NULL REFERENCES implementations (id),
   url TEXT NOT NULL
 );
 --;;
 CREATE TABLE comments (
-  id SERIAL PRIMARY KEY,
+  id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
   parent_type varchar(50) NOT NULL,
   parent_id integer NOT NULL,
   user_id integer NOT NULL REFERENCES users (id),
-  created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  created_at timestamp NOT NULL DEFAULT CUqRENT_TIMESTAMP,
   content TEXT NOT NULL
 );

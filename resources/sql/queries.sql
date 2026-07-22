@@ -16,10 +16,15 @@ from users
 where id = :id and is_active
 
 -- # Category queries
--- :name create-category! :! :n
+-- :name create-category! :<!
 -- :doc Create a category
 insert into categories (name)
 values (:name)
+
+-- :name update-category :! :1
+update categories
+set name = :name
+where id = :id
 
 -- :name list-categories :? :*
 -- :doc List categories
@@ -40,7 +45,7 @@ inner join idea_category ic
   on ic.idea_id = i.id
  and ic.category_id = :category
 
--- :name create-idea! :! :n
+-- :name create-idea! :<!
 -- :doc Create an idea
 insert into ideas (name, description, tags)
 values (:name, :description, :tags)
@@ -91,7 +96,6 @@ left join users impu
  and impu.is_active
 where i.id = :id
 group by i.id
-
 
 -- :name get-implementation-details :? :1
 -- :doc Return an implementation

@@ -5,8 +5,10 @@
     [integrant.core :as ig]
     [reitit.ring.middleware.muuntaja :as muuntaja]
     [reitit.ring.middleware.parameters :as parameters]
+    [reitit.coercion.malli :as coercion]
     [ring.middleware.anti-forgery :refer [wrap-anti-forgery]]
     [vendethiel.ideas.web.pages.categories :as categories]
+    [vendethiel.ideas.web.controllers.categories :as ccategories]
     [vendethiel.ideas.web.pages.ideas :as ideas]
     [vendethiel.ideas.web.pages.implementations :as implementations]))
 
@@ -16,26 +18,43 @@
                       :title "Invalid anti-forgery token"})]
     #(wrap-anti-forgery % {:error-response error-page})))
 
+(def idea-shape {:name string? :description string?}) ;; XXX tags
+
 ;; Routes
 (defn page-routes [opts]
-  [["/" {:get (partial categories/list-categories opts)
+  [{:coercion coercion/coercion} ;; XXX necessary?
+   ["/" {:name :list-categories
+         :get (partial categories/list-categories opts)
+         :post {:handler (partial ccategories/update-category opts)
+                :parameters {:body ccategories/category-shape}}
          }]
+
    ["/categories"
     {}
-    ["/:id" {:get {:handler (partial categories/get-category opts)
-                   :parameters {:path [:map [:id int?]]}}}]
+    ["/:id" {:name :get-category
+             :get {:handler (partial categories/get-category opts)
+                   :parameters {:path {:id int?}}}
+             :post {:handler (partial ccategories/update-category opts)
+                    :roles #{:admin}
+                    :parameters {:path {:id int?}
+                                 :body ccategories/category-shape}}
+             :delete {:handler (partial ccategories/delete-category opts)
+                      :roles #{:admin}
+                      :parameters {:path {:id int?}}}}]
     ]
 
    ["/ideas"
     {}
-    ["/:id" {:get {:handler (partial ideas/get-idea opts)
-                   :parameters {:path [:map [:id int?]]}}}]
+    ["/:id" {:name :get-idea
+             :get {:handler (partial ideas/get-idea opts)
+                   :parameters {:path {:id int?}}}}]
     ]
 
    ["/implementations"
     {}
-    ["/:id" {:get {:handler (partial implementations/get-implementation opts)
-                   :parameters {:path [:map [:id int?]]}}}]
+    ["/:id" {:name :get-implementation
+             :get {:handler (partial implementations/get-implementation opts)
+                   :parameters {:path {:id int?}}}}]
     ]
    ])
 
