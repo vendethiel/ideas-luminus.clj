@@ -20,8 +20,9 @@ where id = :id and is_active
 -- :doc Create a category
 insert into categories (name)
 values (:name)
+returning id
 
--- :name update-category :! :1
+-- :name update-category! :! :1
 update categories
 set name = :name
 where id = :id

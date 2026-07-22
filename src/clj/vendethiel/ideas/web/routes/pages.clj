@@ -22,25 +22,30 @@
 
 ;; Routes
 (defn page-routes [opts]
-  [{:coercion coercion/coercion} ;; XXX necessary?
+  [;{:coercion coercion/coercion} ;; XXX necessary?
    ["/" {:name :list-categories
          :get (partial categories/list-categories opts)
-         :post {:handler (partial ccategories/update-category opts)
-                :parameters {:body ccategories/category-shape}}
          }]
 
    ["/categories"
     {}
+    ["/" {:post {:handler (partial ccategories/update-category opts)
+                 :parameters {:body ccategories/category-shape}}}]
+    ["/new" {:name :new-category
+             :conflicting true
+             :get (partial categories/edit-category opts)}]
     ["/:id" {:name :get-category
-             :get {:handler (partial categories/get-category opts)
-                   :parameters {:path {:id int?}}}
+             :conflicting true
+             :parameters {:path {:id int?}}
+             :get (partial categories/get-category opts)
              :post {:handler (partial ccategories/update-category opts)
-                    :roles #{:admin}
-                    :parameters {:path {:id int?}
-                                 :body ccategories/category-shape}}
+                    ;;:roles #{:admin}
+                    :body ccategories/category-shape}
              :delete {:handler (partial ccategories/delete-category opts)
-                      :roles #{:admin}
-                      :parameters {:path {:id int?}}}}]
+                      ;;:roles #{:admin}
+                      }}]
+    ["/:id/edit" {:name :edit-category
+                  :get (partial categories/edit-category opts)}]
     ]
 
    ["/ideas"

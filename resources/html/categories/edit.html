@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block title %}
-  {% if category %}
+  {% if id %}
     Editing {{category.name}}
   {% else %}
     New Category
@@ -10,24 +10,33 @@
 
 {% block content %}
   <h1>
-  {% if category %}
-    Editing <a href="/category/{{category.id}}">{{category.name}}</a>
+  {% if id %}
+    Editing <a href="/categories/{{category.id}}">{{category.name}}</a>
   {% else %}
     New Category
   {% endif %}
   </h1>
 
-  {% if category %}
-  <form action="/category/{{category.id}}" method="post">
+  {% if id %}
+  <form action="/categories/{{id}}" method="POST">
   {% else %}
-  <form action="/category" method="post">
+  <form action="/categories" method="POST">
   {% endif %}
-    <label for="name">
-      Name
-      {% if errors.name %}
-        <span class="error> - {{errors.name}}</span>
-      {% endif %}
-    </label>
-    <input type="text" name="name" value="{{category.name}}" />
+    {% csrf-field %}
+    <div class="field">
+      <label for="name">
+        Name
+        {% if errors.name %}
+          <span class="error"> - {{errors.name|join:", "}}</span>
+        {% endif %}
+      </label>
+      <input type="text" name="name" value="{{category.name}}" />
+    </div>
+
+    {% if id %}
+      <input type="submit" value="Update" />
+    {% else %}
+      <input type="submit" value="Create" />
+    {% endif %}
   </form>
-{% endif %}
+{% endblock %}

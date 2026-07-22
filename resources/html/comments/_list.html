@@ -4,9 +4,9 @@
     <div class="idea-comment">
     <i>By <a href="/users/{{comment.user_id}}">{{comment.username}}</a> on {{comment.date}}</i>
     {% if comment.user_admin %}
-        <p>{{comment.content|safe}}</p>
+      <p>{{comment.content|safe}}</p>
     {% else %}
-        <p>{{comment.content}}</p>
+      <p>{{comment.content}}</p>
     {% endif %}
     </div>
   {% endfor %}
