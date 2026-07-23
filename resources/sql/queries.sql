@@ -6,14 +6,17 @@ values (:email, :username, :pass, :is_admin, 1)
 
 -- :name login-user :? :1
 -- :doc Get active user by email and password
-select * from users
-where email = :email and pass = :password and is_active
+select id from users
+where email = :email
+  and pass = :password
+  and is_active
 
 -- :name get-user-profile :? :1
 -- :doc Get the public information of an active user
 select id, email, username, admin, last_login
 from users
-where id = :id and is_active
+where id = :id
+--~ (unless (:admin-query? params) "and is_active")
 
 -- # Category queries
 -- :name create-category! :<!

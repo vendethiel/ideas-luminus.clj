@@ -7,18 +7,19 @@
     [reitit.ring.middleware.parameters :as parameters]
     [reitit.coercion.malli :as coercion]
     [ring.middleware.anti-forgery :refer [wrap-anti-forgery]]
-    [vendethiel.ideas.web.pages.categories :as categories]
+    [vendethiel.ideas.web.controllers.auth :as cauth]
     [vendethiel.ideas.web.controllers.categories :as ccategories]
+    [vendethiel.ideas.web.pages.auth :as auth]
+    [vendethiel.ideas.web.pages.categories :as categories]
     [vendethiel.ideas.web.pages.ideas :as ideas]
-    [vendethiel.ideas.web.pages.implementations :as implementations]))
+    [vendethiel.ideas.web.pages.implementations :as implementations]
+    ))
 
 (defn wrap-page-defaults []
   (let [error-page (layout/error-page
                      {:status 403
                       :title "Invalid anti-forgery token"})]
     #(wrap-anti-forgery % {:error-response error-page})))
-
-(def idea-shape {:name string? :description string?}) ;; XXX tags
 
 ;; Routes
 (defn page-routes [opts]
@@ -61,6 +62,11 @@
              :get {:handler (partial implementations/get-implementation opts)
                    :parameters {:path {:id int?}}}}]
     ]
+
+   ["/login"
+    {:name :login
+     :get (partial auth/login-form opts)
+     :post (partial cauth/login opts)}]
    ])
 
 (def route-data

@@ -27,16 +27,18 @@
       <label for="name">
         Name
         {% if errors.name %}
-          <span class="error"> - {{errors.name|join:", "}}</span>
+          &nbsp;- <span class="error">{{errors.name|join:", "}}</span>
         {% endif %}
       </label>
       <input type="text" name="name" value="{{category.name}}" />
     </div>
 
-    {% if id %}
-      <input type="submit" value="Update" />
-    {% else %}
-      <input type="submit" value="Create" />
-    {% endif %}
+    <div class="field field-submit">
+      {% if id %}
+        <input type="submit" value="Update" />
+      {% else %}
+        <input type="submit" value="Create" />
+      {% endif %}
+    </div>
   </form>
 {% endblock %}
