@@ -7,12 +7,15 @@
     [reitit.ring.middleware.parameters :as parameters]
     [reitit.coercion.malli :as coercion]
     [ring.middleware.anti-forgery :refer [wrap-anti-forgery]]
+    [vendethiel.ideas.web.middleware.auth :refer [login-middleware roles-middleware]]
     [vendethiel.ideas.web.controllers.auth :as cauth]
     [vendethiel.ideas.web.controllers.categories :as ccategories]
+    [vendethiel.ideas.web.controllers.users :as cusers]
     [vendethiel.ideas.web.pages.auth :as auth]
     [vendethiel.ideas.web.pages.categories :as categories]
     [vendethiel.ideas.web.pages.ideas :as ideas]
     [vendethiel.ideas.web.pages.implementations :as implementations]
+    [vendethiel.ideas.web.pages.users :as users]
     ))
 
 (defn wrap-page-defaults []
@@ -40,10 +43,10 @@
              :parameters {:path {:id int?}}
              :get (partial categories/get-category opts)
              :post {:handler (partial ccategories/update-category opts)
-                    ;;:roles #{:admin}
+                    :roles #{:admin}
                     :body ccategories/category-shape}
              :delete {:handler (partial ccategories/delete-category opts)
-                      ;;:roles #{:admin}
+                      :roles #{:admin}
                       }}]
     ["/:id/edit" {:name :edit-category
                   :get (partial categories/edit-category opts)}]
@@ -65,8 +68,23 @@
 
    ["/login"
     {:name :login
+     :roles #{:anon}
      :get (partial auth/login-form opts)
      :post (partial cauth/login opts)}]
+   ["/logout"
+    {:name :register
+     :roles #{:user}
+     :post (partial cauth/logout opts)}]
+   ["/users"
+    {}
+    [["/:id"
+      {:name :get-user
+       :get (partial users/get-user opts)}]
+     ["/new"
+      {:name :logout
+       :roles #{:user}
+       :get (partial users/register-form opts)
+       :post (partial cusers/register opts)}]]]
    ])
 
 (def route-data
@@ -78,7 +96,11 @@
     ;; encoding response body
     muuntaja/format-response-middleware
     ;; exception handling
-    exception/wrap-exception]})
+    exception/wrap-exception
+    ;; auth
+    roles-middleware
+    login-middleware
+    ]})
 
 (derive :reitit.routes/pages :reitit/routes)
 

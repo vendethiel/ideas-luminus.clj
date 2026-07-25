@@ -24,7 +24,11 @@
             _ (println "login:" logged-in-id)]
         (if logged-in-id
           (-> (http-response/see-other "/")
-           (assoc-in [:session :user] logged-in-id))
+              (assoc-in [:session :user-id] logged-in-id))
           (layout/render request "auth/login.html"
                          {:email (:email data)
                           :errors {:email ["User not found"]}}))))))
+
+(defn logout [_ request]
+  (-> (http-response/see-other "/")
+      (update-in [:session] dissoc :user-id)))

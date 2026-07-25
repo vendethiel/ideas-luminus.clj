@@ -12,6 +12,11 @@
 <body>
     <!-- navbar -->
     <nav>
+      {% if user %}
+        Welcome, {{user.username}} &bull; Log Out
+      {% else %}
+        Welcome, Anonymous &bull; <a href="/login">Log In</a> &bull; <a href="/register">Register</a>
+      {% endif %}
     </nav>
     <section>
         <div class="content">

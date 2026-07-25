@@ -3,6 +3,7 @@
 -- :doc Create a user
 insert into users (email, username, pass, admin, is_active)
 values (:email, :username, :pass, :is_admin, 1)
+returning id
 
 -- :name login-user :? :1
 -- :doc Get active user by email and password

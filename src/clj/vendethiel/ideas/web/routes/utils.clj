@@ -38,6 +38,6 @@
             {:type :create-exception :exception e}))
         (try
           (let [created (create-fn data)]
-            {:result :created :id (:id created) :data (assoc created :id (:id created))})
+            {:result :created :id (:id created) :data (merge data created)})
           (catch Exception e
             {:type :update-exception :exception e}))))))
