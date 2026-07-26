@@ -28,6 +28,6 @@
                          {:email (:email data)
                           :errors {:email ["User not found"]}}))))))
 
-(defn logout [_ request]
+(defn logout [_opts _request]
   (-> (http-response/see-other "/")
       (update-in [:session] dissoc :user-id)))

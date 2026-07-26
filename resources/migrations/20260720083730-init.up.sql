@@ -49,6 +49,6 @@ CREATE TABLE comments (
   parent_type varchar(50) NOT NULL,
   parent_id integer NOT NULL,
   user_id integer NOT NULL REFERENCES users (id),
-  created_at timestamp NOT NULL DEFAULT CUqRENT_TIMESTAMP,
+  created_at timestamp NOT NULL DEFAULT CURENT_TIMESTAMP,
   content TEXT NOT NULL
 );

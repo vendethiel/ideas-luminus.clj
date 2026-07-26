@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+
+{% block title %}{{user.username}} - Profile{% endblock %}
+
+{% block content %}
+  <h1>Profile of {{user.username}}</h1>
+
+  {% if implementations|not-empty %}
+  <h3>Submitted implementations:</h3>
+  <ul>
+    {% for implementation in implementations %}
+    <li>
+      <a href="/implementations/{{implementation.id}}">Implementation</a> of <a href="/ideas/{{implementation.idea_id}}">{{implementation.idea_name}}</a>
+    </li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+
+  {% if comments|not-empty %}
+  <h3>Last comments</h3>
+  {% for comment in comments %}
+  <div class="user-comment">
+    <i>At {{comment.created_at}} on&nbsp;
+      {% if comment.imp_name|not-empty %}
+        <a href="/implementations/{{comment.imp_id}}>">{{comment.imp_name}}</a> of <a href="/ideas/{{comment.idea_id}}">{{comment.idea_name}}</a>
+      {% else %}
+        {% if comment.imp_id %}
+          <a href="/implementations/{{comment.imp_id}}">an implementation</a> of <a href="/ideas/{{comment.idea_id}}">{{comment.idea_name}}</a>
+        {% else %}
+          <a href="/ideas/{{comment.idea_id}}">{{comment.idea_name}}</a>
+        {% endif %}
+      {% endif %}
+    </i>
+    <p>{{comment.content}}</p>
+  </div>
+  {% endfor %}
+  {% endif %}
+{% endblock %}

@@ -13,7 +13,7 @@
     <!-- navbar -->
     <nav>
       {% if user %}
-        Welcome, {{user.username}} &bull; Log Out
+        Welcome, <a href="/users/{{user.id}}">{{user.username}}</a> &bull; Log Out
       {% else %}
         Welcome, Anonymous &bull; <a href="/login">Log In</a> &bull; <a href="/users/new">Register</a>
       {% endif %}

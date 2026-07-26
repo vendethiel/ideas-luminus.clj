@@ -7,7 +7,6 @@
   (let [idea (query-fn :get-idea-details
                        {:id (:id path-params)})
         data (map (juxt identity #(j/read-value (%1 idea)))
-                  [:tags :comments :categories :implementations])
-        ]
+                  [:tags :comments :categories :implementations])]
     (layout/render request "ideas/show.html"
                    (into {:idea idea} data))))

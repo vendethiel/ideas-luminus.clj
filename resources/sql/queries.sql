@@ -13,11 +13,56 @@ where email = :email
   and is_active
 
 -- :name get-user-profile :? :1
--- :doc Get the public information of an active user
+-- :doc Get the public information of an active user TODO RENAME
 select id, email, username, admin, last_login
 from users
 where id = :id
 --~ (when (not (:admin-query? params)) "and is_active")
+
+-- :name get-user-detailed :? :1
+-- :doc Get a user's complete profile
+select u.id, u.username,
+       json_group_array(json_object(
+         'repo_url', imp.repo_url,
+         'demo_url', imp.demo_url,
+         'abstract', imp.abstract,
+         'tags', jsonb(imp.tags),
+         'idea_id', impi.id,
+         'idea_name', impi.name,
+         'idea_description', impi.description,
+         'idea_tags', jsonb(impi.tags)
+       )) filter (
+          where imp.id is not null
+            and impi.id is not null
+       ) implementations
+
+from users u
+left join implementations imp
+  on imp.user_id = u.id
+left join ideas impi
+  on imp.idea_id = impi.id
+where u.id = :id
+group by u.id
+--~ (when (not (:admin-query? params)) "and is_active")
+
+-- :name get-user-comments :? :*
+-- :doc Returns the last comments of a user, and the associated object
+select com.created_at, com.content,
+       coalesce(impi.id, i.id) idea_id,
+       coalesce(impi.name, i.name) idea_name,
+       imp.id imp_id,
+       imp.abstract imp_abstract
+
+from comments com
+left join ideas i
+  on com.parent_type = 'ideas' and com.parent_id = i.id
+left join implementations imp
+  on com.parent_type = 'implementations' and com.parent_id = imp.id
+left join ideas impi
+  on impi.id = imp.idea_id
+where com.user_id = :id
+order by created_at desc
+limit :limit
 
 -- # Category queries
 -- :name create-category! :<!
@@ -69,20 +114,27 @@ select i.id, i.name, i.description, i.tags,
          'user_admin', cu.admin,
          'content', com.content,
          'date', com.created_at
-       )) comments,
+       )) filter (
+         where com.id is not null and cu.id is not null
+       ) comments,
        json_group_array(json_object(
          'id', cat.id,
          'name', cat.name
-       )) categories,
+       )) filter (
+         where cat.id is not null
+       ) categories,
        json_group_array(json_object(
          'id', imp.id,
          'user_id', imp.user_id,
          'username', impu.username,
          'repo_url', imp.repo_url,
          'demo_url', imp.demo_url,
-         'abstract', imp.comment,
+         'abstract', imp.abstract,
          'tags', jsonb(imp.tags)
-       )) implementations
+       )) filter (
+         where imp.id is not null
+       ) implementations
+
 from ideas i
 left join comments com
   on com.parent_type = 'ideas'
@@ -121,6 +173,7 @@ select imp.repo_url, imp.demo_url, imp.abstract, imp.comment,
          'content', com.content,
          'date', com.created_at
        )) comments
+
 from implementations imp
 left join comments com
   on com.parent_type = 'implementations'
