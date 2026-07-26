@@ -20,11 +20,10 @@
       (layout/render request "auth/login.html"
                      {:email (:email data)
                       :errors (me/humanize errors)})
-      (let [logged-in-id (query-fn :login-user data)
-            _ (println "login:" logged-in-id)]
-        (if logged-in-id
+      (let [logged-in (query-fn :login-user data)]
+        (if logged-in
           (-> (http-response/see-other "/")
-              (assoc-in [:session :user-id] logged-in-id))
+              (assoc-in [:session :user-id] (:id logged-in)))
           (layout/render request "auth/login.html"
                          {:email (:email data)
                           :errors {:email ["User not found"]}}))))))

@@ -9,7 +9,7 @@ returning id
 -- :doc Get active user by email and password
 select id from users
 where email = :email
-  and pass = :password
+  and pass = :pass
   and is_active
 
 -- :name get-user-profile :? :1
@@ -17,7 +17,7 @@ where email = :email
 select id, email, username, admin, last_login
 from users
 where id = :id
---~ (unless (:admin-query? params) "and is_active")
+--~ (when (not (:admin-query? params)) "and is_active")
 
 -- # Category queries
 -- :name create-category! :<!

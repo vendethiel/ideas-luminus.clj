@@ -3,12 +3,14 @@
    [reitit.ring :as ring]
    [clojure.set :as set]))
 
-(defn login-middleware [handler]
-  (fn [{:keys [query-fn] :as request}]
-    (if-let [user (get-in request [:session :user-id])]
-      ;; TODO check user is found
-      (handler (assoc request :user (query-fn :get-user-profile {:id user})))
-      (handler request))))
+(defn login-middleware [{:keys [query-fn]}]
+  (fn [handler]
+    (fn [request]
+      (if-let [user (get-in request [:session :user-id])]
+        (if user
+          (handler (assoc request :user (query-fn :get-user-profile {:id user})))
+          (handler request))
+        (handler request)))))
 
 (defn roles-middleware [handler]
   (fn [{:keys [user] :as request}]

@@ -77,17 +77,20 @@
      :post (partial cauth/logout opts)}]
    ["/users"
     {}
-    [["/:id"
-      {:name :get-user
-       :get (partial users/get-user opts)}]
-     ["/new"
+    [["/new"
       {:name :logout
-       :roles #{:user}
+       :conflicting true
+       :roles #{:anon}
        :get (partial users/register-form opts)
-       :post (partial cusers/register opts)}]]]
+       :post (partial cusers/register opts)}]
+     ["/:id"
+      {:name :get-user
+       :conflicting true
+       :get (partial users/get-user opts)
+       :parameters {:path {:id int?}}}]]]
    ])
 
-(def route-data
+(defn route-data [opts]
   {:middleware 
    [;; Default middleware for pages
     (wrap-page-defaults)
@@ -99,7 +102,7 @@
     exception/wrap-exception
     ;; auth
     roles-middleware
-    login-middleware
+    (login-middleware opts)
     ]})
 
 (derive :reitit.routes/pages :reitit/routes)
@@ -109,5 +112,4 @@
       :or   {base-path ""}
       :as   opts}]
   (layout/init-selmer! opts)
-  (fn [] [base-path route-data (page-routes opts)]))
-
+  (fn [] [base-path (route-data opts) (page-routes opts)]))

@@ -17,6 +17,8 @@
   {% endif %}
   </h1>
 
+  {% include "_common/errors.html" %}
+
   {% if id %}
   <form action="/categories/{{id}}" method="POST">
   {% else %}
@@ -24,12 +26,7 @@
   {% endif %}
     {% csrf-field %}
     <div class="field">
-      <label for="name">
-        Name
-        {% if errors.name %}
-          &nbsp;- <span class="error">{{errors.name|join:", "}}</span>
-        {% endif %}
-      </label>
+      <label for="name">Name</label>
       <input type="text" name="name" value="{{category.name}}" />
     </div>
 

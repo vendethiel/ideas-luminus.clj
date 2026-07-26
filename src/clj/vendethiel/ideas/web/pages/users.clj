@@ -11,4 +11,4 @@
                    {:user user})))
 
 (defn register-form [_ request]
-  (layout/render request "users/register.html"))
+  (layout/render request "users/new.html"))
