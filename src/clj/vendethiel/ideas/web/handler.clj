@@ -3,6 +3,7 @@
     [vendethiel.ideas.web.middleware.core :as middleware]
     [vendethiel.ideas.web.middleware.exception :as exception]
     [integrant.core :as ig]
+    [clojure.spec.alpha :as s]
     [spec-tools.spell :as spell]
     [ring.util.response :as response]
     [reitit.ring :as ring]
@@ -49,11 +50,21 @@
             route))
         routes))
 
+(s/def ::role #{:admin :anon :user})
+(s/def ::roles (s/coll-of ::role :into #{}))
+(s/def ::can-ns #{:categories :ideas :implementations :comments})
+; this version of ::can-action doesn't have -own
+(s/def ::can-action #{:read :new :edit :delete})
+(s/def ::can (s/tuple ::can-ns ::can-action))
+
 (defmethod ig/init-key :router/core
   [_ {:keys [routes env] :as opts}]
   (let [extra {:validate rs/validate
-               :spec ::rs/default-data
-               ::rs/wrap spell/closed
+               :spec (s/merge
+                      ::rs/default-data
+                      (s/keys :opt-un [::roles ::can]))
+               ; TODO debug
+               ;::rs/wrap spell/closed
                :exception (when (= :dev env) pretty/exception)
                }]
     (if (= env :dev)
