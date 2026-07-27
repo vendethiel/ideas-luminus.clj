@@ -36,8 +36,8 @@
                  :parameters {:body ccategories/category-shape}}}]
     ["/new" {:name :new-category
              :conflicting true
-             :get {:handler (partial categories/edit-category opts)
-                   :can [:categories :new]}}]
+             :can [:categories :new]
+             :get (partial categories/edit-category opts)}]
     ["/:id" {:name :get-category
              :conflicting true
              :parameters {:path {:id int?}}
