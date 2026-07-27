@@ -22,7 +22,7 @@
            ;; kit Libs
  io.github.kit-clj/kit-core {:mvn/version "1.0.10"}
  io.github.kit-clj/kit-undertow {:mvn/version "1.0.14"}
- selmer/selmer {:mvn/version "1.12.50"}
+ selmer/selmer {:mvn/version "1.13.4"}
  luminus/ring-ttl-session {:mvn/version "0.3.3"}
  io.github.kit-clj/kit-sql-conman {:mvn/version "1.10.4"}
  io.github.kit-clj/kit-sql-migratus {:mvn/version "1.0.4"}

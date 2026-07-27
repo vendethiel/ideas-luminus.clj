@@ -13,4 +13,8 @@
       {% endfor %}
     </ul>
   {% endif %}
+
+  {% ifcan :categories :new %}
+    <a href="/categories/new">New Category</a>
+  {% endcan %}
 {% endblock %}

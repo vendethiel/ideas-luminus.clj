@@ -5,7 +5,6 @@
     [integrant.core :as ig]
     [reitit.ring.middleware.muuntaja :as muuntaja]
     [reitit.ring.middleware.parameters :as parameters]
-    [reitit.coercion.malli :as coercion]
     [ring.middleware.anti-forgery :refer [wrap-anti-forgery]]
     [vendethiel.ideas.web.middleware.auth :refer [login-middleware roles-middleware]]
     [vendethiel.ideas.web.controllers.auth :as cauth]
@@ -26,8 +25,7 @@
 
 ;; Routes
 (defn page-routes [opts]
-  [;{:coercion coercion/coercion} ;; XXX necessary?
-   ["/" {:name :list-categories
+  [["/" {:name :list-categories
          :get (partial categories/list-categories opts)
          }]
 
