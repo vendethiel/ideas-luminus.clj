@@ -20,13 +20,7 @@
     (fn [{:keys [pass pass_confirmation]}]
       (= pass pass_confirmation))]])
 
-;;  email TEXT,
-;;  username TEXT,
-;;  admin BOOLEAN NOT NULL,
-;;  last_login TIME,
-;;  is_active BOOLEAN NOT NULL,
-;;  pass TEXT
-(defn register [{:keys [query-fn]} {:keys [form-params] :as request}]
+0(defn register [{:keys [query-fn]} {:keys [form-params] :as request}]
   (let [data (m/decode register-shape form-params form-transformer)
         errors (me/humanize (m/explain register-shape data))]
     (if errors
@@ -34,7 +28,7 @@
                      {:data data :errors errors})
       (let [created (query-fn :create-user!
                               (merge data
-                                     {:is_admin false :is_active true}))]
+                                     {:admin false :is_active true}))]
         (-> (http-response/see-other "/")
             (assoc-in [:session :user-id] (:id created)))))))
 

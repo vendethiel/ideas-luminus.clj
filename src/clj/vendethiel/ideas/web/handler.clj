@@ -3,8 +3,11 @@
     [vendethiel.ideas.web.middleware.core :as middleware]
     [vendethiel.ideas.web.middleware.exception :as exception]
     [integrant.core :as ig]
+    [spec-tools.spell :as spell]
     [ring.util.response :as response]
     [reitit.ring :as ring]
+    [reitit.spec :as rs]
+    [reitit.dev.pretty :as pretty]
     [reitit.swagger-ui :as swagger-ui]))
 
 (defmethod ig/init-key :handler/ring
@@ -29,11 +32,18 @@
        :not-acceptable
        (constantly (-> {:status 406, :body "Not acceptable"}
                        (response/content-type "text/plain")))}))
+    ;; XXX Should be under :data?
     {:middleware [;; logs exceptions that escape the route-level exception
                   ;; middleware (e.g. errors thrown while reading the request
                   ;; body) before they reach the server; must stay outermost
                   exception/wrap-log-exceptions
-                  (middleware/wrap-base opts)]}))
+                  (middleware/wrap-base opts)]
+     ;; this doesn't work, investigate why
+     :validate rs/validate
+     :spec ::rs/default-data
+     ::rs/wrap spell/closed
+     :exception (when (some? api-path) ;; TODO better dev check
+                  pretty/exception)}))
 
 (defmethod ig/init-key :router/routes
   [_ {:keys [routes]}]

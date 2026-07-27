@@ -6,7 +6,7 @@
     [reitit.ring.middleware.muuntaja :as muuntaja]
     [reitit.ring.middleware.parameters :as parameters]
     [ring.middleware.anti-forgery :refer [wrap-anti-forgery]]
-    [vendethiel.ideas.web.middleware.auth :refer [login-middleware roles-middleware]]
+    [vendethiel.ideas.web.middleware.auth :refer [login-middleware roles-can-middleware]]
     [vendethiel.ideas.web.controllers.auth :as cauth]
     [vendethiel.ideas.web.controllers.categories :as ccategories]
     [vendethiel.ideas.web.controllers.users :as cusers]
@@ -32,10 +32,12 @@
    ["/categories"
     {}
     ["/" {:post {:handler (partial ccategories/update-category opts)
+                 :can [:categories :new]
                  :parameters {:body ccategories/category-shape}}}]
     ["/new" {:name :new-category
              :conflicting true
-             :get (partial categories/edit-category opts)}]
+             :get {:handler (partial categories/edit-category opts)
+                   :can [:categories :new]}}]
     ["/:id" {:name :get-category
              :conflicting true
              :parameters {:path {:id int?}}
@@ -99,8 +101,8 @@
     ;; exception handling
     exception/wrap-exception
     ;; auth
-    roles-middleware
     (login-middleware opts)
+    roles-can-middleware
     ]})
 
 (derive :reitit.routes/pages :reitit/routes)
