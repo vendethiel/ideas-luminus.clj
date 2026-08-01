@@ -18,17 +18,17 @@
 
 (defn roles-can-middleware [handler]
   (fn [{:keys [user user-can] :as request}]
-    ;; TODO remove roles entirely
-    (let [roles (cond
-                  (and user (:admin user)) #{:user :admin}
-                  user #{:user}
-                  :else #{:anon})
-          req-data (-> request (ring/get-match) :data)
-          required-roles (:roles req-data)
-          role-ko (and (seq required-roles) (not (set/subset? required-roles roles)))
+    (let [req-data (-> request (ring/get-match) :data)
           can-form (:can req-data)
-          can-ko (and (some? can-form) (not (can/check-can user user-can can-form)))
-        ]
-      (if (or role-ko can-ko)
+          can-ko (and (vector? can-form) (not (can/check-can user user-can can-form)))
+          can-delayed-called (atom false)
+          can-delayed (when (= :delayed can-form)
+                        (fn [k]
+                          (reset! can-delayed-called true)
+                          (can/assert-can user user-can k)))]
+      (if can-ko
         (http-response/unauthorized)
-        (handler request)))))
+        (let [resp (handler (assoc request :can-delayed can-delayed))]
+          (if (and can-delayed (not @can-delayed-called))
+            (http-response/internal-server-error ":can not checked!")
+            resp))))))

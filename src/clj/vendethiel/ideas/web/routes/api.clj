@@ -34,14 +34,16 @@
 ;; Routes
 (defn api-routes [_opts]
   [["/swagger.json"
-    {:get {:no-doc  true
+    {:can [:auth :api]
+     :get {:no-doc  true
            :swagger {:info {:title "vendethiel.ideas API"}}
            :handler (swagger/create-swagger-handler)}}]
    ["/health"
     ;; note that use of the var is necessary
     ;; for reitit to reload routes without
     ;; restarting the system
-    {:get #'health/healthcheck!}]])
+    {:get #'health/healthcheck!
+     :can [:auth :api]}]])
 
 (derive :reitit.routes/api :reitit/routes)
 

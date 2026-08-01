@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+
+{% block title %}
+  {% if id %}
+    Editing {{idea.name}}
+  {% else %}
+    New Idea
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  <h1>
+  {% if id %}
+    Editing <a href="/ideas/{{idea.id}}">{{idea.name}}</a>
+  {% else %}
+    New Idea
+  {% endif %}
+  </h1>
+{% endblock %}

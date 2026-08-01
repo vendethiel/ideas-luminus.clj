@@ -10,6 +10,7 @@
     [vendethiel.ideas.web.controllers.auth :as cauth]
     [vendethiel.ideas.web.controllers.categories :as ccategories]
     [vendethiel.ideas.web.controllers.users :as cusers]
+    [vendethiel.ideas.web.controllers.ideas :as cideas]
     [vendethiel.ideas.web.pages.auth :as auth]
     [vendethiel.ideas.web.pages.categories :as categories]
     [vendethiel.ideas.web.pages.ideas :as ideas]
@@ -26,68 +27,81 @@
 ;; Routes
 (defn page-routes [opts]
   [["/" {:name :list-categories
+         :can [:categories :list]
          :get (partial categories/list-categories opts)
          }]
 
    ["/categories"
     {}
-    ["/" {:post {:handler (partial ccategories/update-category opts)
-                 :can [:categories :new]
+    ["/" {:can [:categories :new]
+          :post {:handler (partial ccategories/update-category opts)
                  :parameters {:body ccategories/category-shape}}}]
     ["/new" {:name :new-category
              :conflicting true
-             :can [:categories :new]
+             :can :delayed
              :get (partial categories/edit-category opts)}]
     ["/:id" {:name :get-category
              :conflicting true
              :parameters {:path {:id int?}}
+             :can :delayed
              :get (partial categories/get-category opts)
              :post {:handler (partial ccategories/update-category opts)
-                    :roles #{:admin}
                     :body ccategories/category-shape}
-             :delete {:handler (partial ccategories/delete-category opts)
-                      :roles #{:admin}
-                      }}]
+             :delete (partial ccategories/delete-category opts)}]
     ["/:id/edit" {:name :edit-category
+                  :can :delayed
                   :get (partial categories/edit-category opts)}]
     ]
 
    ["/ideas"
     {}
+    ["/new" {:name :new-idea
+             :conflicting true
+             :can [:ideas :new]
+             :get (partial ideas/edit-idea opts)}]
     ["/:id" {:name :get-idea
-             :get {:handler (partial ideas/get-idea opts)
-                   :parameters {:path {:id int?}}}}]
+             :conflicting true
+             :parameters {:path {:id int?}}
+             :can :delayed
+             :get (partial ideas/get-idea opts)
+             :post (partial cideas/update-idea opts)}]
+    ["/:id/edit" {:name :edit-idea
+                  :can :delayed
+                  :get (partial ideas/edit-idea opts)}]
     ]
 
    ["/implementations"
     {}
     ["/:id" {:name :get-implementation
-             :get {:handler (partial implementations/get-implementation opts)
-                   :parameters {:path {:id int?}}}}]
+             :parameters {:path {:id int?}}
+             :can :delayed
+             :get (partial implementations/get-implementation opts)}]
     ]
 
    ["/login"
     {:name :login
-     :roles #{:anon}
+     :can [:auth :login]
      :get (partial auth/login-form opts)
      :post (partial cauth/login opts)}]
    ["/logout"
     {:name :register
-     :roles #{:user}
+     :can [:auth :logout]
      :post (partial cauth/logout opts)}]
    ["/users"
     {}
     [["/new"
       {:name :logout
        :conflicting true
-       :roles #{:anon}
+       :can [:users :new]
        :get (partial users/register-form opts)
        :post (partial cusers/register opts)}]
      ["/:id"
       {:name :get-user
        :conflicting true
+       :parameters {:path {:id int?}}
+       :can [:users :read]
        :get (partial users/get-user opts)
-       :parameters {:path {:id int?}}}]]]
+       }]]]
    ])
 
 (defn route-data [opts]

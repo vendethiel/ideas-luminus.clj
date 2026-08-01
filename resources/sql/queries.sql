@@ -105,8 +105,14 @@ values (:name, :description, :tags)
 insert into idea_category (idea_id, category_id)
 values :tuple*:links
 
+-- :name :get-idea :? :1
+-- :doc Returns a simple idea
+select *
+from ideas
+where id = :id
+
 -- :name get-idea-details :? :1
--- :doc Return an idea + comments
+-- :doc Return an idea and its linked components
 select i.id, i.name, i.description, i.tags,
        json_group_array(json_object(
          'user_id', com.user_id,

@@ -50,19 +50,20 @@
             route))
         routes))
 
-(s/def ::role #{:admin :anon :user})
-(s/def ::roles (s/coll-of ::role :into #{}))
-(s/def ::can-ns #{:categories :ideas :implementations :comments})
+(s/def ::can-ns #{:users :categories :ideas :implementations :comments})
 ; this version of ::can-action doesn't have -own
-(s/def ::can-action #{:read :new :edit :delete})
-(s/def ::can (s/tuple ::can-ns ::can-action))
+(s/def ::can-action #{:list :read :new :edit :delete})
+(s/def ::auth-action #{:login :logout :api})
+(s/def ::can (s/or :delayed #{:delayed}
+                   :object (s/tuple ::can-ns ::can-action)
+                   :auth (s/tuple #{:auth} ::auth-action)))
 
 (defmethod ig/init-key :router/core
   [_ {:keys [routes env] :as opts}]
   (let [extra {:validate rs/validate
                :spec (s/merge
                       ::rs/default-data
-                      (s/keys :opt-un [::roles ::can]))
+                      (s/keys :req-un [::can]))
                ; TODO debug
                ;::rs/wrap spell/closed
                :exception (when (= :dev env) pretty/exception)

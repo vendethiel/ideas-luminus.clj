@@ -4,6 +4,9 @@
 
 {% block content %}
   <h1>{{category.name}}</h1>
+  {% ifcan :categories :edit %}
+    <a href="/categories/{{category.id}}/edit">Edit</a>
+  {% endcan %}
   {% if ideas|empty? %}
     <h3>Stay tuned!</h3>
   {% else %}

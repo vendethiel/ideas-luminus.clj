@@ -4,6 +4,9 @@
 
 {% block content %}
   <h1>{{idea.name}}</h1>
+  {% ifcan :ideas :edit idea.user_id %}
+    <a href="/ideas/{{idea.id}}/edit">Edit</a>
+  {% endcan %}
 
   {% if tags|not-empty %}
   <h5><i>Tagged: {{tags|join:", "}}</i></h5>
