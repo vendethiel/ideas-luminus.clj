@@ -16,4 +16,4 @@
   (let [id (:id path-params)
         idea (when id (query-fn :get-idea {:id id}))]
     (can-delayed [:ideas (if id :edit :new) (:user_id idea)])
-    (layout/render request "ideas/edit.html" {:idea idea})))
+    (layout/render request "ideas/edit.html" {:id id :idea idea})))

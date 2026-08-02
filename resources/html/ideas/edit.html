@@ -16,4 +16,16 @@
     New Idea
   {% endif %}
   </h1>
+
+
+  {% include "_common/errors.html" %}
+
+  {% if id %}
+  <form action="/ideas/{{id}}" method="POST">
+  {% else %}
+  <form action="/ideas" method="POST">
+  {% endif %}
+    {% csrf-field %}
+  </form>
+
 {% endblock %}

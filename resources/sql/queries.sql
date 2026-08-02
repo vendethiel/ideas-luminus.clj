@@ -105,7 +105,7 @@ values (:name, :description, :tags)
 insert into idea_category (idea_id, category_id)
 values :tuple*:links
 
--- :name :get-idea :? :1
+-- :name get-idea :? :1
 -- :doc Returns a simple idea
 select *
 from ideas
