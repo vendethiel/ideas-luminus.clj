@@ -55,10 +55,16 @@
 
    ["/ideas"
     {}
+    ["/" {:can :delayed
+          :post (partial cideas/update-idea opts)}]
     ["/new" {:name :new-idea
              :conflicting true
-             :can [:ideas :new]
+             :can :delayed
              :get (partial ideas/edit-idea opts)}]
+    ["/unassigned" {:name :unassigned-ideas
+                    :conflicting true
+                    :can [:ideas :admin]
+                    :get (partial ideas/list-unassigned-ideas opts)}]
     ["/:id" {:name :get-idea
              :conflicting true
              :parameters {:path {:id int?}}
@@ -66,8 +72,14 @@
              :get (partial ideas/get-idea opts)
              :post (partial cideas/update-idea opts)}]
     ["/:id/edit" {:name :edit-idea
+                  :parameters {:path {:id int?}}
                   :can :delayed
                   :get (partial ideas/edit-idea opts)}]
+    ["/:id/assign" {:name :assign-idea
+                    :parameters {:path {:id int?}}
+                    :can [:ideas :admin]
+                    :get (partial ideas/assign-idea opts)
+                    :post (partial cideas/assign-idea opts)}]
     ]
 
    ["/implementations"

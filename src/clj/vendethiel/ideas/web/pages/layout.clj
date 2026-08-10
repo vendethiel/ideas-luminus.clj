@@ -20,6 +20,7 @@
     (if (= \: (first str))
       (keyword (subs str 1))
       (resolve str))))
+
 (defn ifcan [_args {:keys [user user-can] :as context-map} content]
   (let [args (map (kw-or-resolve #(parser/resolve-arg % context-map)) _args)
         can (can/check-can user user-can args)]
@@ -34,6 +35,8 @@
   (parser/add-tag! :csrf-field (fn [_ _] (anti-forgery-field)))
   (parser/add-tag! :ifcan #'ifcan :ifcant :endcan)
   (parser/add-filter! :humanize humanize)
+  (parser/add-filter! :contains? (fn [ks k]
+                                   (some #(= % k) ks)))
   )
 
 (defn render

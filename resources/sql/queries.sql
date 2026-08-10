@@ -72,6 +72,7 @@ values (:name)
 returning id
 
 -- :name update-category! :! :1
+-- :doc Updates a category
 update categories
 set name = :name
 where id = :id
@@ -97,13 +98,47 @@ inner join idea_category ic
 
 -- :name create-idea! :<!
 -- :doc Create an idea
-insert into ideas (name, description, tags)
-values (:name, :description, :tags)
+insert into ideas (name, description, tags, user_id)
+values (:name, :description, :tags, :user_id)
+returning id
+
+-- :name update-idea! :! :1
+-- :doc Update an idea TODO tags too
+update ideas
+set name = :name
+where id = :id
+
+-- :name list-unassigned-ideas :? :*
+-- :doc List ideas that don't have a category
+select ideas.id, ideas.name, ideas.description, ideas.tags, ideas.user_id,
+       u.username user_name
+from ideas
+left join users u
+  on u.id = ideas.user_id
+where not exists (
+  select 1
+  from idea_category ic
+  where ic.idea_id = ideas.id
+)
+limit :limit
+-- TODO created at
+
+-- :name list-idea-categories :? :*
+-- :doc Lists which categories are assigned to an idea
+select category_id
+from idea_category
+where idea_id = :idea
 
 -- :name link-ideas-categories! :! :n
 -- :doc Link ideas to categories
 insert into idea_category (idea_id, category_id)
 values :tuple*:links
+
+-- :name unlink-idea-categories! :! :n
+-- :doc Unlink an idea from specific categories
+delete from idea_category
+where idea_id = :idea
+  and category_id in (:v*:categories)
 
 -- :name get-idea :? :1
 -- :doc Returns a simple idea

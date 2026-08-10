@@ -1,7 +1,6 @@
 (ns vendethiel.ideas.web.middleware.auth
   (:require
    [reitit.ring :as ring]
-   [clojure.set :as set]
    [vendethiel.ideas.web.can :as can]
    [ring.util.http-response :as http-response]))
 
@@ -16,6 +15,11 @@
           (handler (assoc request :user-can can/LOGGED_OUT_CANS)))
         (handler (assoc request :user-can can/LOGGED_OUT_CANS))))))
 
+
+(defn assert-can [user user-can args]
+  (when (not (can/check-can user user-can args))
+    (http-response/unauthorized!)))
+
 (defn roles-can-middleware [handler]
   (fn [{:keys [user user-can] :as request}]
     (let [req-data (-> request (ring/get-match) :data)
@@ -25,7 +29,7 @@
           can-delayed (when (= :delayed can-form)
                         (fn [k]
                           (reset! can-delayed-called true)
-                          (can/assert-can user user-can k)))]
+                          (assert-can user user-can k)))]
       (if can-ko
         (http-response/unauthorized)
         (let [resp (handler (assoc request :can-delayed can-delayed))]

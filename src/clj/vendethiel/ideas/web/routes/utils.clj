@@ -35,9 +35,11 @@
               {:result :updated :id id :data updated}
               {:result :not-found}))
           (catch Exception e
-            {:type :create-exception :exception e}))
+            {:result :create-exception :exception e}))
         (try
-          (let [created (create-fn data)]
-            {:result :created :id (:id created) :data (merge data created)})
+          (let [created (create-fn data)
+                ;; handle `:<!` and `:insert :raw`
+                created-fst (if (vector? created) (first created) created)]
+            {:result :created :id (:id created-fst) :data (merge data created-fst)})
           (catch Exception e
-            {:type :update-exception :exception e}))))))
+            {:result :update-exception :exception e}))))))
