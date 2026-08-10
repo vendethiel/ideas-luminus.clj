@@ -84,10 +84,20 @@
 
    ["/implementations"
     {}
+    ["/new" {:name :new-implementation
+             :conflicting true
+             :parameters {:query {:id int?}}
+             :can :delayed
+             :get (partial implementations/edit-implementation opts)}]
     ["/:id" {:name :get-implementation
+             :conflicting true
              :parameters {:path {:id int?}}
              :can :delayed
              :get (partial implementations/get-implementation opts)}]
+    ["/:id/edit" {:name :edit-implementation
+                  :parameters {:path {:id int?}}
+                  :can :delayed
+                  :get (partial implementations/edit-implementation opts)}]
     ]
 
    ["/login"

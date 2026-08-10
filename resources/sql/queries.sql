@@ -195,8 +195,14 @@ left join users impu
 where i.id = :id
 group by i.id
 
--- :name get-implementation-details :? :1
+-- :name get-implementation :? :1
 -- :doc Return an implementation
+select *
+from implementations
+where id = :id
+
+-- :name get-implementation-details :? :1
+-- :doc Return an implementation and its details
 select imp.repo_url, imp.demo_url, imp.abstract, imp.comment,
        imp.tags,
        impu.id implementation_user,

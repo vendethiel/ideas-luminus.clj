@@ -41,6 +41,10 @@
     </ul>
   {% endif %}
 
+  {% ifcan :implementations :new %}
+    <a href="/implementations/new?idea={{idea.id}}">Submit implementation</a>
+  {% endcan %}
+
   {% include comments/_list.html with comments=comments %}
 
 {% endblock %}

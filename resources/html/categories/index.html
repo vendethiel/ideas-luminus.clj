@@ -3,7 +3,7 @@
 {% block title %}Categories - Ideas{% endblock %}
 
 {% block content %}
-    <h1>Categories</h1>
+  <h1>Categories</h1>
   {% if categories|empty? %}
     <h3>Stay tuned!</h3>
   {% else %}
@@ -16,5 +16,9 @@
 
   {% ifcan :categories :new %}
     <a href="/categories/new">New Category</a>
+  {% endcan %}
+
+  {% ifcan :ideas :admin %}
+    <a href="/ideas/unassigned">Unassigned ideas</a>
   {% endcan %}
 {% endblock %}
