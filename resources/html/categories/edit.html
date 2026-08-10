@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+
+{% block title %}
+  {% if id %}
+    Editing {{category.name}}
+  {% else %}
+    New Category
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  <h1>
+  {% if id %}
+    Editing <a href="/categories/{{category.id}}">{{category.name}}</a>
+  {% else %}
+    New Category
+  {% endif %}
+  </h1>
+
+  {% include "_common/errors.html" %}
+
+  {% if id %}
+  <form action="/categories/{{id}}" method="POST">
+  {% else %}
+  <form action="/categories" method="POST">
+  {% endif %}
+    {% csrf-field %}
+    <div class="field">
+      <label for="name">Name</label>
+      <input type="text" name="name" value="{{category.name}}" />
+    </div>
+
+    <div class="field field-submit">
+      {% if id %}
+        <input type="submit" value="Update" />
+      {% else %}
+        <input type="submit" value="Create" />
+      {% endif %}
+    </div>
+  </form>
+
+{% endblock %}

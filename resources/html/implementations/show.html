@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+
+{% block title %}
+  {% if implementation.abstract|not-empty %}
+    {{implementation.abstract}} - {{implementation.idea_name}} - Ideas
+  {% else %}
+    {{implementation.idea_name}} - Ideas
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  {% if implementation.abstract|not-empty %}
+    <h1>{{implementation.abstract}} - <a href="/ideas/{{implementation.idea_id}}">{{implementation.idea_name}}</a></h1>
+  {% else %}
+    <h1><a href="/ideas/{{implementation.idea_id}}">{{implementation.idea_name}}</a></h1>
+  {% endif %}
+
+  <div class="implementation-info">
+    {% if implementation.implementation_user %}
+      <span>By <a href="/users/{{implementation.implementation_user}}">{{implementation.implementation_username}}</a></span>
+    {% endif %}
+    {% if tags|not-empty %}
+      <i>Tagged: {{tags|join:", "}}</i>
+    {% endif %}
+  </div>
+
+  <div class="implementation-idea">
+    {% if implementation.idea_username %}
+      <span>Original idea by <a href="/users/{{implementation.implementation_user}}">{{implementation.implementation_username}}</a></span>
+    {% endif %}
+    {% if idea_tags|not-empty %}
+    <i>Idea tags: {{idea_tags|join:", "}}</i>
+    {% endif %}
+  </div>
+
+  <p class="implementation-description">{{implementation.description}}</p>
+
+  {% include comments/_list.html with comments=comments %}
+
+{% endblock %}

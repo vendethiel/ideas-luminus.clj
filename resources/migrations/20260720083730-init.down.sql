@@ -1,0 +1,13 @@
+DROP TABLE users;
+--;;
+DROP TABLE ideas;
+--;;
+DROP TABLE implementations;
+--;;
+DROP TABLE comments;
+--;;
+DROP TABLE idea_category;
+--;;
+DROP TABLE categories;
+--;;
+DROP TABLE screenshots;

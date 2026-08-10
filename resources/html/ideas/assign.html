@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+
+{% block title %}
+  Assigning {{idea.name}}
+{% endblock %}
+
+{% block content %}
+  <h1>Assigning <a href="/ideas/{{idea.id}}">{{idea.name}}</a></h1>
+
+  <form action="/ideas/{{idea.id}}/assign" method="POST">
+    {% csrf-field %}
+
+    <ul>
+      {% for category in categories %}
+      <li>
+        <input name="category[]" type="checkbox" value="{{category.id}}"
+               {% if selected|contains?:@category.id %}
+               checked="checked"
+               {% endif %}
+               />
+        {{category.name}}
+      </li>
+      {% endfor %}
+
+      <input type="submit" value="Assign" />
+    </ul>
+  </form>
+{% endblock %}

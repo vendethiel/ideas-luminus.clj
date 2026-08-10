@@ -1,0 +1,50 @@
+{% extends "layout.html" %}
+
+{% block title %}{{idea.name}} - Ideas{% endblock %}
+
+{% block content %}
+  <h1>{{idea.name}}</h1>
+  {% ifcan :ideas :edit idea.user_id %}
+    <a href="/ideas/{{idea.id}}/edit">Edit</a>
+  {% endcan %}
+  {% ifcan :ideas :admin idea.user_id %}
+    <a href="/ideas/{{idea.id}}/assign">Assign</a>
+  {% endcan %}
+
+  {% if tags|not-empty %}
+  <h5><i>Tagged: {{tags|join:", "}}</i></h5>
+  {% endif %}
+
+  <p>{{idea.description}}</p>
+
+  {% if categories|not-empty %}
+    <h3>Appears in:</h3>
+    <ul>
+      {% for category in categories %}
+        <li><a href="/categories/{{category.id}}">{{category.name}}</a></li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  {% if implementations|not-empty %}
+    <h3>User-submitted implementations:</h3>
+    <ul>
+      {% for implementation in implementations %}
+      <li>
+        <a href="/implementations/{{implementation.id}}">Implementation</a> by <a href="/users/{{implementation.user_id}}">{{implementation.username}}</a>
+        {% if implementation.tags|not-empty %}
+          <i>Tagged: {{implementation.tags|join:", "}}</i>
+        {% endif %}
+        <p>{{implementation.comment}}</p>
+      </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  {% ifcan :implementations :new %}
+    <a href="/implementations/new?idea={{idea.id}}">Submit implementation</a>
+  {% endcan %}
+
+  {% include comments/_list.html with comments=comments %}
+
+{% endblock %}

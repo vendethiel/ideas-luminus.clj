@@ -1,0 +1,49 @@
+{% extends "layout.html" %}
+
+{% block title %}
+  {% if id %}
+    Editing {{idea.name}}
+  {% else %}
+    New Idea
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  <h1>
+  {% if id %}
+    Editing <a href="/ideas/{{idea.id}}">{{idea.name}}</a>
+  {% else %}
+    New Idea
+  {% endif %}
+  </h1>
+
+
+  {% include "_common/errors.html" %}
+
+  {% if id %}
+  <form action="/ideas/{{id}}" method="POST">
+  {% else %}
+  <form action="/ideas" method="POST">
+  {% endif %}
+    {% csrf-field %}
+
+    <div class="field">
+      <label for="name">Name</label>
+      <input type="text" name="name" value="{{idea.name}}" />
+    </div>
+
+    <div class="field">
+      <label for="description">Description</label>
+      <textarea name="description">{{idea.description}}</textarea>
+    </div>
+
+    <div class="field field-submit">
+      {% if id %}
+        <input type="submit" value="Update" />
+      {% else %}
+        <input type="submit" value="Create" />
+      {% endif %}
+    </div>
+  </form>
+
+{% endblock %}

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="todo: describe app here">
+    <title>{% block title %}Welcome to ideas{% endblock %}</title>
+
+    <!-- styles -->
+    <link href="/css/screen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <!-- navbar -->
+    <nav>
+      {% if user %}
+        Welcome, <a href="/users/{{user.id}}">{{user.username}}</a> &bull; Log Out
+      {% else %}
+        Welcome, Anonymous &bull; <a href="/login">Log In</a> &bull; <a href="/users/new">Register</a>
+      {% endif %}
+    </nav>
+    <section>
+        <div class="content">
+          {% block content %}
+            <h2>Welcome to Ideas.clj!</h2>
+          {% endblock content %}
+        </div>
+    </section>
+</body>
+</html>

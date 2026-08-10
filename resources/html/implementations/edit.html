@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+
+{% block title %}
+  {% if id %}
+    {% if implementation.abstract|not-empty %}
+    Editing '{{implementation.abstract}}'
+    {% else %}
+    Editing an implementation
+    {% endif %}
+  {% else %}
+    New implementation
+  {% endif %}
+  of {{idea.name}}
+{% endblock %}
+
+{% block content %}
+
+  <h1>
+  {% if id %}
+    {% if implementation.abstract|not-empty %}
+    Editing '{{implementation.abstract}}'
+    {% else %}
+    Editing an implementation
+    {% endif %}
+  {% else %}
+    New implementation
+  {% endif %}
+  of <a href="/ideas/{{idea.id}}/">{{idea.name}}</a>
+  </h1>
+
+{% endblock %}

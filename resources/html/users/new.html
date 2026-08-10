@@ -1,0 +1,34 @@
+{% extends "layout.html" %}
+
+{% block title %}Register{% endblock %}
+
+{% block content %}
+  <h1>Register</h1>
+
+  {% include "_common/errors.html" %}
+
+  <form action="/users/new" method="POST">
+
+    {% csrf-field %}
+    <div class="field">
+      <label for="email">Email</label>
+      <input type="email" name="email" value="{{data.email}}" />
+    </div>
+    <div class="field">
+      <label for="username">Username</label>
+      <input type="text" name="username" value="{{data.username}}" />
+    </div>
+    <div class="field">
+      <label for="pass">Password</label>
+      <input type="password" name="pass" />
+    </div>
+    <div class="field">
+      <label for="pass_confirmation">Confirm Password</label>
+      <input type="password" name="pass_confirmation" />
+    </div>
+
+    <div class="field field-submit">
+      <input type="submit" value="Register" />
+    </div>
+  </form>
+{% endblock %}

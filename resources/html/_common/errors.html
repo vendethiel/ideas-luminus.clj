@@ -1,0 +1,9 @@
+{% if errors|not-empty %}
+<div class="errors">
+  <ul>
+  {% for error in errors %}
+    <li>{% firstof error_field_names.(error.0) error.0|humanize|capitalize %}: {{error.1|join:", "}}</li>
+  {% endfor %}
+  </ul>
+</div>
+{% endif %}
